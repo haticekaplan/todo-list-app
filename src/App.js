@@ -1,23 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
 
-function App() {
+const App = () => {
+  const [newTodoText, setNewTodoText] = useState("");
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    const storedTodos = JSON.parse(localStorage.getItem('todos')) || [];
+    setTodos(storedTodos);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
+
+  const handleChangeTodoText = (e) => {
+    setNewTodoText(e.target.value);
+  }
+
+  const handleAddTodoArray = () => {
+    let array = [...todos];
+    array.push(newTodoText);
+    setTodos(array);
+    setNewTodoText("");
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="flex justify-center items-center h-screen w-screen">
+      <div className="w-1/3">
+        <h2 className="text-3xl font-bold mb-4 text-center">My Todo List</h2>
+        {todos.map((item, index) => (
+          <div className="flex items-center p-4 border-b">
+            <span className="flex-1 text-lg font-semibold">{item}</span>
+          </div>
+        ))}
+        <div className="mt-4 flex">
+          <div className="w-3/4">
+            <input
+              type="text"
+              className="border rounded-md p-2 focus:outline-none focus:border-blue-500 w-full h-full"
+              placeholder="Todo Description"
+              value={newTodoText}
+              onChange={handleChangeTodoText}
+            />
+          </div>
+          <div className="w-1/4">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full h-full"
+              type="submit"
+              onClick={handleAddTodoArray}
+            >
+              Add Todo
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

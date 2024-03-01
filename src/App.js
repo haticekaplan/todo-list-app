@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { v4 as uuid } from 'uuid';
 
 const App = () => {
   const [newTodoText, setNewTodoText] = useState("");
@@ -16,11 +17,18 @@ const App = () => {
   const handleChangeTodoText = (e) => {
     setNewTodoText(e.target.value);
   }
-
+  const handleDeleteTodo = (id) => {
+    const todosArray = todos.filter((item) => item.id !== id);
+    setTodos(todosArray);
+  }
   const handleAddTodoArray = () => {
-    let array = [...todos];
-    array.push(newTodoText);
-    setTodos(array);
+    let todosArray = [...todos];
+    let todoObject = {
+      id: uuid(),
+      text: newTodoText,
+    }
+    todosArray.push(todoObject);
+    setTodos(todosArray);
     setNewTodoText("");
   }
 
@@ -30,7 +38,8 @@ const App = () => {
         <h2 className="text-3xl font-bold mb-4 text-center">My Todo List</h2>
         {todos.map((item, index) => (
           <div className="flex items-center p-4 border-b">
-            <span className="flex-1 text-lg font-semibold">{item}</span>
+            <span className="flex-1 text-lg font-semibold">{item.text}</span>
+            <button onClick={() => handleDeleteTodo(item.id)}>Delete</button>
           </div>
         ))}
         <div className="mt-4 flex">
